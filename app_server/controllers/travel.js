@@ -1,12 +1,48 @@
-var fs = require('fs');
-var trips = JSON.parse(fs.readFileSync('./data/trips.json', 'utf8'));
+const tripsEndpoint = "http://localhost:3000/api/trips";
+const options = {
+    method: "GET",
+    headers: {
+        Accept: "application/json",
+    }
+}
 
-/* GET travel view */
-const travel = (req, res) => {
-    res.render('travel', { title: 'Travlr Getaways', trips});
+// var fs = require('fs')
+// vat trips = JSON.parse(fs.readFileSync{"./data/trips.json", "utf8"})
 
-};
+const travel = async function (req, res, next) {
+    // console.log("TRAVEL CONTROLLER BEGIN")
+    await fetch(tripsEndpoint, options)
+    .then((res) => res.json())
+    .then((json) => {
+        let message = null;
+        if (!(json instanceof Array)) {
+            message = "API lookup error";
+            json = [];
+        } else {
+            if (!json.length) {
+                message = "No trips exist in our database!";
+            }
+        }
+        res.render("travle", { title: "Travle Getaways", trips: json, message })
+    })
+    .catch((err) => res.status(500).send(err.message))
+}
+
+const travelDetails = async function (req, res, next) {
+    await fetch(tripsEndpoint + "/" + req.params.tripCode, options)
+    .then((res) => res.json())
+    .then((json) => {
+        let message = null;
+        if (!json || json instanceof Array) {
+            message = "Trip not found";
+            json = {};
+        }
+        res.render("travelDetails", { title: "Trip Details", trip: json, message })
+    })
+    .catch((err) => res.status(500).send(err.message))
+}
 
 module.exports = {
-    travel
+    travel,
+    travelDetails,
 }
