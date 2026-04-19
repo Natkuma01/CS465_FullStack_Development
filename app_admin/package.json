@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "format": "prettier --write \"src/**/*.{ts,html,css,json}\""
   },
   "private": true,
   "packageManager": "npm@11.5.1",
@@ -29,4 +30,5 @@
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }
+  
 }
